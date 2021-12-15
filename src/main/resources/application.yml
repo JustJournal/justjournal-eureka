@@ -2,28 +2,48 @@ spring:
   profiles.default: default
 ---
 spring:
-  profiles: default
+  config:
+    activate:
+      on-profile: default
+  cloud:
+    config:
+      enabled: false
+
+server:
+  port: 8761
 
 eureka:
+  instance:
+    hostname: localhost
   client:
-    registerWithEureka: true
-    fetchRegistry: true
+    registerWithEureka: false
+    fetchRegistry: false
     serviceUrl:
-      defaultZone: http://appstore.midnightbsd.org:8761/eureka/,http://eureka.justjournal.com:8761/eureka/
+      defaultZone: http://${eureka.instance.hostname}:${server.port}/eureka/
   server:
     batch-replication: true
 ---
 spring:
-  profiles: ds9
+  config:
+    activate:
+      on-profile: ds9
 
 eureka:
   instance:
     hostname: eureka.justjournal.com
+  client:
+    serviceUrl:
+      defaultZone: http://appstore.midnightbsd.org:8761/eureka/
 
 ---
 spring:
-  profiles: appstore
+  config:
+    activate:
+      on-profile: appstore
 
 eureka:
   instance:
-    hostname: eureka.justjournal.com
+    hostname: appstore.midnightbsd.org
+  client:
+    serviceUrl:
+      defaultZone: http://eureka.justjournal.com:8761/eureka/
